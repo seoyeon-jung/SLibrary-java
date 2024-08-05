@@ -116,4 +116,9 @@ public class UserService {
 		}
 	}
 
+	// 로그인한 유저 반환
+	public User getLoggedInUser() {
+		return loggedInUser;
+	}
+
 }

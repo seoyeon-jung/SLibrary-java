@@ -17,7 +17,7 @@ public class SLibraryExample {
 
 	// user, book, loan 인스턴스 생성
 	public static UserService us = new UserService();
-	public static BookService book = new BookService();
+	public static BookService book = new BookService(us);
 
 	public static void main(String[] args) {
 		// database 연결
@@ -63,10 +63,10 @@ public class SLibraryExample {
 
 			switch (num) {
 			case 1:
-				System.out.println("대출 가능한 책 목록");
+				book.printBookList(); // 대출가능한 책 목록
 				break;
 			case 2:
-				System.out.println("책 대출하기");
+				book.borrowBook(); // 책 대출하기
 				break;
 			case 3:
 				System.out.println("책 반납하기");

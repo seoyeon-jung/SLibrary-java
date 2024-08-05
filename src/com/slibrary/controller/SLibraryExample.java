@@ -32,7 +32,7 @@ public class SLibraryExample {
 
 				switch (num) {
 				case 1:
-					System.out.println("회원가입");
+					us.signUpUser(); // 회원가입
 					break;
 				case 2:
 					System.out.println("로그인");

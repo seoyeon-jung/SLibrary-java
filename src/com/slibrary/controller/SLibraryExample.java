@@ -89,7 +89,7 @@ public class SLibraryExample {
 
 		while (isUserMenuActive) {
 			System.out.println("\n ========== USER PAGE ==========");
-			System.out.println("1. 비밀번호 변경 | 2. 내가 빌린 책 목록 | 3. 돌아가기 | 4. 로그아웃");
+			System.out.println("1. 비밀번호 변경 | 2. 내가 빌린 책 목록 | 3. 이전으로 | 4. 로그아웃 | 5. 탈퇴하기");
 
 			int num = sc.nextInt();
 			sc.nextLine();
@@ -106,7 +106,12 @@ public class SLibraryExample {
 				isUserMenuActive = false;
 				break;
 			case 4:
-				System.out.println("로그가웃, 다시 메인으로 돌아가기");
+				System.out.println("로그아웃, 다시 메인으로 돌아가기");
+				isUserMenuActive = false;
+				isMainMenuActive = false;
+				break;
+			case 5:
+				us.deleteUser(); // 회원 탈퇴
 				isUserMenuActive = false;
 				isMainMenuActive = false;
 				break;

@@ -66,4 +66,30 @@ public class UserDAO {
 		}
 	}
 
+	// 회원 탈퇴 (deleted_at update하기)
+	public boolean deleteUser(String email, String password) throws Exception {
+		// 1. 로그인한 유저 확인
+		String checkSQL = "SELECT * FROM users WHERE email = ? AND password = ? AND deleted_at IS NULL";
+		try (Connection conn = DBConnection.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(checkSQL)) {
+			pstmt.setString(1, email);
+			pstmt.setString(2, password);
+			ResultSet rs = pstmt.executeQuery();
+
+			if (!rs.next()) {
+				return false; // 유저 정보가 맞지 않음
+			}
+		}
+
+		// 2. 회원 탈퇴
+		String deleteSQL = "UPDATE users SET deleted_at = NOW() WHERE email = ? AND deleted_at IS NULL";
+		try (Connection conn = DBConnection.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(deleteSQL)) {
+			pstmt.setString(1, email);
+
+			int resultRow = pstmt.executeUpdate();
+			return resultRow > 0;
+		}
+	}
+
 }

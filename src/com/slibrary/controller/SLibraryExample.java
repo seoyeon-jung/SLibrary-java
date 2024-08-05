@@ -72,7 +72,6 @@ public class SLibraryExample {
 				System.out.println("책 반납하기");
 				break;
 			case 4:
-				System.out.println("마이 페이지 메뉴 들어가기");
 				userMenu();
 				break;
 			case 5:
@@ -99,7 +98,7 @@ public class SLibraryExample {
 				us.changePassword(); // 비밀번호 변경
 				break;
 			case 2:
-				System.out.println("내가 빌린 책 목록");
+				us.printBorrowedBook(); // 내가 대출한 책 목록 가져오기
 				break;
 			case 3:
 				System.out.println("메인 페이지로 돌아가기");

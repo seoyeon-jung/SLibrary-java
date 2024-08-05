@@ -3,7 +3,10 @@ package com.slibrary.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.slibrary.model.Book;
 import com.slibrary.model.User;
 import com.slibrary.util.DBConnection;
 
@@ -89,6 +92,25 @@ public class UserDAO {
 
 			int resultRow = pstmt.executeUpdate();
 			return resultRow > 0;
+		}
+	}
+
+	// 로그인한 유저가 빌린 책 목록 출력
+	public List<Book> getBorrowedBooks(int id) throws Exception {
+		String sql = "SELECT b.id, b.isbn, b.title, b.author, b.category, b.available " + "FROM book b "
+				+ "JOIN loan l ON b.id = l.book_id " + "WHERE l.member_id = ? AND l.return_date > NOW()";
+
+		try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setInt(1, id);
+			ResultSet rs = pstmt.executeQuery();
+
+			List<Book> borrowedBooks = new ArrayList<>();
+			while (rs.next()) {
+				Book book = new Book(rs.getInt("id"), rs.getString("isbn"), rs.getString("title"),
+						rs.getString("author"), rs.getString("category"), rs.getBoolean("available"));
+				borrowedBooks.add(book);
+			}
+			return borrowedBooks;
 		}
 	}
 

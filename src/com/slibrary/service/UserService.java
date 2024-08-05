@@ -1,7 +1,10 @@
 package com.slibrary.service;
 
+import java.util.List;
+
 import com.slibrary.controller.SLibraryExample;
 import com.slibrary.dao.UserDAO;
+import com.slibrary.model.Book;
 import com.slibrary.model.User;
 
 public class UserService {
@@ -113,6 +116,22 @@ public class UserService {
 			System.out.println("회원 탈퇴가 성공적으로 완료되었습니다.");
 		} else {
 			System.out.println("회원 탈퇴에 실패했습니다. 다시 시도해주세요.");
+		}
+	}
+
+	// 로그인한 유저가 빌린 책 목록 출력
+	public void printBorrowedBook() throws Exception {
+		if (loggedInUser == null) {
+			System.out.println("로그인 후 대출한 책 목록을 확인할 수 있습니다.");
+			return;
+		}
+
+		List<Book> borrowedBooks = userDAO.getBorrowedBooks(loggedInUser.getId());
+		System.out.println("\n ========== 내가 대출한 책 목록 ==========");
+		System.out.println("ID \t 제목 \t 작가 \t 분류");
+		for (Book book : borrowedBooks) {
+			System.out.println(
+					book.getId() + "\t" + book.getTitle() + "\t" + book.getAuthor() + "\t" + book.getCategory());
 		}
 	}
 

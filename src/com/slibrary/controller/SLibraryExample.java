@@ -56,7 +56,7 @@ public class SLibraryExample {
 	private static void mainMenu() throws Exception {
 		while (isMainMenuActive) {
 			System.out.println("\n ========== MAIN PAGE ==========");
-			System.out.println("1. 대출 가능한 책 목록 | 2. 책 대출하기 | 3. 책 반납하기 | 4. 마이 페이지 | 5. 로그아웃");
+			System.out.println("1. 대출 가능한 책 목록 | 2. 책 대출하기 | 3. 책 반납하기 | 4. 책 검색하기 | 5. 마이 페이지 | 6. 로그아웃");
 
 			int num = sc.nextInt();
 			sc.nextLine();
@@ -72,9 +72,12 @@ public class SLibraryExample {
 				book.returnBook(); // 책 반납하기
 				break;
 			case 4:
-				userMenu();
+				book.searchBook(); // 책 검색하기
 				break;
 			case 5:
+				userMenu();
+				break;
+			case 6:
 			default:
 				System.out.println("로그아웃, 다시 메인으로 돌아가기");
 				isMainMenuActive = false;

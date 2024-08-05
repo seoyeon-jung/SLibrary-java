@@ -113,4 +113,24 @@ public class BookDAO {
 
 	}
 
+	// 책 검색하기 (제목 일부로도 검색 가능)
+	public List<Book> searchBook(String title) throws Exception {
+		String sql = "SELECT * FROM book WHERE title LIKE ? AND available = true";
+
+		try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setString(1, "%" + title + "%");
+			ResultSet rs = pstmt.executeQuery();
+
+			List<Book> bookList = new ArrayList<>();
+
+			while (rs.next()) {
+				Book book = new Book(rs.getInt("id"), rs.getString("isbn"), rs.getString("title"),
+						rs.getString("author"), rs.getString("category"), rs.getBoolean("available"));
+
+				bookList.add(book);
+			}
+			return bookList;
+		}
+	}
+
 }

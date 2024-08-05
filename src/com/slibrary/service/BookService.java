@@ -88,4 +88,24 @@ public class BookService {
 	}
 
 	// 책 검색하기
+	public void searchBook() throws Exception {
+		System.out.println("\n ========== 책 제목으로 검색하기 ==========");
+
+		String title = getInput("책 제목", true);
+
+		// DB에서 책 목록 가져오기
+		List<Book> bookList = bookDAO.searchBook(title);
+
+		// list 출력
+		if (bookList.isEmpty()) {
+			System.out.println("검색 결과가 없습니다.");
+		} else {
+			System.out.println("ID \t 제목 \t 작가 \t 분류");
+			for (Book book : bookList) {
+				System.out.println(
+						book.getId() + "\t" + book.getTitle() + "\t" + book.getAuthor() + "\t" + book.getCategory());
+			}
+		}
+
+	}
 }

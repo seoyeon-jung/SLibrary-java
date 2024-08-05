@@ -67,6 +67,24 @@ public class BookService {
 	}
 
 	// 책 반납하기
+	public void returnBook() throws Exception {
+		if (us.getLoggedInUser() == null) {
+			System.out.println("로그인 후에 책을 반납할 수 있습니다.");
+			return;
+		}
+
+		System.out.println("\n ========== 책 반납하기 ==========");
+
+		int bookId = Integer.parseInt(getInput("책 ID", true));
+		int userId = us.getLoggedInUser().getId();
+
+		boolean success = bookDAO.returnBook(bookId, userId);
+		if (success) {
+			System.out.println("책을 성공적으로 반납하였습니다.");
+		} else {
+			System.out.println("책 반납에 실패했습니다. 다시 한번 시도해주세요.");
+		}
+	}
 
 	// 책 검색하기
 }

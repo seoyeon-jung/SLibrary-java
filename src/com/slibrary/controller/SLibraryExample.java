@@ -69,7 +69,7 @@ public class SLibraryExample {
 				book.borrowBook(); // 책 대출하기
 				break;
 			case 3:
-				System.out.println("책 반납하기");
+				book.returnBook(); // 책 반납하기
 				break;
 			case 4:
 				userMenu();

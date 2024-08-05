@@ -62,4 +62,30 @@ public class BookDAO {
 		}
 	}
 
+	// 책 반납하기
+	public boolean returnBook(int bookId, int userId) throws Exception {
+		try (Connection conn = DBConnection.getConnection()) {
+			// 1. loan table에서 avilable을 다시 true로 변경하기
+			String updateLoanSQL = "UPDATE loan SET available = true, return_date = NOW() WHERE book_id = ? AND member_id = ? AND return_date IS NULL";
+			try (PreparedStatement pstmtUpdateLoan = conn.prepareStatement(updateLoanSQL)) {
+				pstmtUpdateLoan.setInt(1, bookId);
+				pstmtUpdateLoan.setInt(2, userId);
+
+				int result = pstmtUpdateLoan.executeUpdate();
+
+				if (result > 0) {
+					// 2. book table에서 available을 다시 true로 변경하기
+					String updateBookSQL = "UPDATE book SET available = true WHERE id = ?";
+					try (PreparedStatement pstmtUpdateBook = conn.prepareStatement(updateBookSQL)) {
+						pstmtUpdateBook.setInt(1, bookId);
+						pstmtUpdateBook.executeUpdate();
+					}
+					return true;
+				}
+			}
+		}
+		return false;
+
+	}
+
 }

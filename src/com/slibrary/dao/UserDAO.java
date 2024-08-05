@@ -39,4 +39,31 @@ public class UserDAO {
 		return null;
 	}
 
+	// 비밀번호 update (password 입력해서 해당 user 맞는지 확인 후에 비밀번호 업데이트)
+	public boolean updatePassword(String email, String originPassword, String newPassword) throws Exception {
+		// 1. 해당 유저의 비밀번호 체크
+		String checkSQL = "SELECT * FROM users WHERE email = ? AND password = ? AND deleted_at IS NULL";
+		try (Connection conn = DBConnection.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(checkSQL)) {
+			pstmt.setString(1, email);
+			pstmt.setString(2, originPassword);
+			ResultSet rs = pstmt.executeQuery();
+
+			if (!rs.next()) {
+				return false; // 비밀번호 일치하지 않음
+			}
+		}
+
+		// 2. 비밀번호 변경
+		String updateSQL = "UPDATE users SET password = ? WHERE email = ? AND deleted_at IS NULL";
+		try (Connection conn = DBConnection.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(updateSQL)) {
+			pstmt.setString(1, newPassword);
+			pstmt.setString(2, email);
+
+			int resultRow = pstmt.executeUpdate();
+			return resultRow > 0;
+		}
+	}
+
 }

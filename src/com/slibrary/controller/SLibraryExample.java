@@ -96,7 +96,7 @@ public class SLibraryExample {
 
 			switch (num) {
 			case 1:
-				System.out.println("비밀번호 변경하기");
+				us.changePassword(); // 비밀번호 변경
 				break;
 			case 2:
 				System.out.println("내가 빌린 책 목록");

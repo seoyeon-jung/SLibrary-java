@@ -56,4 +56,22 @@ public class UserService {
 		}
 	}
 
+	// 비밀번호 변경
+	public void changePassword() throws Exception {
+		System.out.println("\n ========== 비밀번호 변경 ==========");
+
+		// 비밀번호를 입력한 뒤에, 해당 user가 맞는지 다시 한 번 체크한 뒤에 비밀번호 변경하기
+		String email = getInput("이메일", true);
+		String originPassword = getInput("현재 비밀번호", true);
+		String newPassword = getInput("새로운 비밀번호", true);
+
+		// DB에 저장
+		boolean success = userDAO.updatePassword(email, originPassword, newPassword);
+		if (success) {
+			System.out.println("비밀번호가 성공적으로 변경되었습니다.");
+		} else {
+			System.out.println("비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
+		}
+	}
+
 }

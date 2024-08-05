@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.slibrary.model.Book;
@@ -66,21 +67,45 @@ public class BookDAO {
 	public boolean returnBook(int bookId, int userId) throws Exception {
 		try (Connection conn = DBConnection.getConnection()) {
 			// 1. loan table에서 avilable을 다시 true로 변경하기
-			String updateLoanSQL = "UPDATE loan SET available = true, return_date = NOW() WHERE book_id = ? AND member_id = ? AND return_date IS NULL";
-			try (PreparedStatement pstmtUpdateLoan = conn.prepareStatement(updateLoanSQL)) {
-				pstmtUpdateLoan.setInt(1, bookId);
-				pstmtUpdateLoan.setInt(2, userId);
+			String getLoanInfoSQL = "UPDATE loan SET available = true, return_date = NOW() WHERE book_id = ? AND member_id = ? AND return_date IS NULL";
+			try (PreparedStatement pstmtGetLoanInfo = conn.prepareStatement(getLoanInfoSQL)) {
+				pstmtGetLoanInfo.setInt(1, bookId);
+				pstmtGetLoanInfo.setInt(2, userId);
+				ResultSet rs = pstmtGetLoanInfo.executeQuery();
 
-				int result = pstmtUpdateLoan.executeUpdate();
+				if (rs.next()) {
+					Date loanDate = rs.getDate("loan_date");
+					Date today = new Date(System.currentTimeMillis());
+					long daysLate = (today.getTime() - loanDate.getTime()) / (1000 * 60 * 60 * 24);
 
-				if (result > 0) {
-					// 2. book table에서 available을 다시 true로 변경하기
-					String updateBookSQL = "UPDATE book SET available = true WHERE id = ?";
-					try (PreparedStatement pstmtUpdateBook = conn.prepareStatement(updateBookSQL)) {
-						pstmtUpdateBook.setInt(1, bookId);
-						pstmtUpdateBook.executeUpdate();
+					// 2. 반납 기한 초과 여부 확인
+					boolean isLate = daysLate > 14;
+
+					// 3. 대출 기록 업데이트
+					String updateLoanSQL = "UPDATE loan SET available = true, return_date = NOW() WHERE book_id = ? AND member_id = ? AND return_date IS NULL";
+					try (PreparedStatement pstmtUpdateLoan = conn.prepareStatement(updateLoanSQL)) {
+						pstmtUpdateLoan.setInt(1, bookId);
+						pstmtUpdateLoan.setInt(2, userId);
+						int result = pstmtUpdateLoan.executeUpdate();
+
+						if (result > 0) {
+							// 4. 책의 대출 상태 업데이트
+							String updateBookSQL = "UPDATE book SET available = true WHERE id = ?";
+							try (PreparedStatement pstmtUpdateBook = conn.prepareStatement(updateBookSQL)) {
+								pstmtUpdateBook.setInt(1, bookId);
+								pstmtUpdateBook.executeUpdate();
+							}
+
+							// 5. 반납 상태에 따라 메시지 출력
+							if (isLate) {
+								System.out.println(daysLate + "일 이후에 반납했습니다.");
+							} else {
+								System.out.println("반납을 완료했습니다.");
+							}
+
+							return true;
+						}
 					}
-					return true;
 				}
 			}
 		}

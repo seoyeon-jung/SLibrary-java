@@ -75,6 +75,7 @@ public class BookService {
 
 		System.out.println("\n ========== 책 반납하기 ==========");
 
+		us.printBorrowedBook(); // 우선 현재 user가 반납 가능한 책 목록 출력
 		int bookId = Integer.parseInt(getInput("책 ID", true));
 		int userId = us.getLoggedInUser().getId();
 

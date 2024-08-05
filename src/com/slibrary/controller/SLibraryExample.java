@@ -33,9 +33,10 @@ public class SLibraryExample {
 				switch (num) {
 				case 1:
 					us.signUpUser(); // 회원가입
+					mainMenu();
 					break;
 				case 2:
-					System.out.println("로그인");
+					us.loginUser(); // 로그인
 					mainMenu();
 					break;
 				default:
@@ -54,7 +55,6 @@ public class SLibraryExample {
 	// 로그인 이후의 main menu
 	private static void mainMenu() throws Exception {
 		while (isMainMenuActive) {
-			System.out.println("\n ========== WELCOME SLibrary! ==========");
 			System.out.println("\n ========== MAIN PAGE ==========");
 			System.out.println("1. 대출 가능한 책 목록 | 2. 책 대출하기 | 3. 책 반납하기 | 4. 마이 페이지 | 5. 로그아웃");
 

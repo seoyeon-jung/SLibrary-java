@@ -9,23 +9,6 @@ import com.slibrary.util.DBConnection;
 
 public class UserDAO {
 
-	// user_id를 통해 해당 유저 정보를 가져오는 메소드
-	public User getUser(int id) throws Exception {
-		String sql = "SELECT * FROM users WHERE id = ? AND deleted_at IS NULL";
-
-		try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setInt(1, id);
-			ResultSet rs = pstmt.executeQuery();
-
-			if (rs.next()) {
-				return new User(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("password"),
-						rs.getDate("created_at"), rs.getDate("update_at"), rs.getDate("deleted_at"));
-			}
-		}
-		return null;
-
-	}
-
 	// 회원 가입 (유저 정보를 DB에 추가)
 	public int addUser(User newUser) throws Exception {
 		String sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
@@ -37,6 +20,23 @@ public class UserDAO {
 
 			return pstmt.executeUpdate();
 		}
+	}
+
+	// 로그인 (DB의 email, password와 비교해서 로그인하기)
+	public User login(String email, String password) throws Exception {
+		String sql = "SELECT * FROM users WHERE email = ? AND password = ? AND deleted_at IS NULL";
+
+		try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setString(1, email);
+			pstmt.setString(2, password);
+			ResultSet rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				return new User(rs.getInt("id"), rs.getString("name"), rs.getString("email"), rs.getString("password"),
+						rs.getDate("created_at"), rs.getDate("updated_at"), rs.getDate("deleted_at"));
+			}
+		}
+		return null;
 	}
 
 }
